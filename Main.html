@@ -240,14 +240,22 @@
 <body>
 
     <!-- STAGE 1: CHOOSE AN EGG -->
-    <div id="egg-screen">
-        <h1 class="egg-title">Pick an Egg to Begin</h1>
-        <div class="egg-container">
-            <!-- Both eggs call the same hatch function -->
-            <div class="egg" onclick="hatchEgg(this)">🔴</div>
-            <div class="egg" onclick="hatchEgg(this)">⚫</div>
-        </div>
+    <!-- The introductory egg picking screen -->
+<div id="egg-screen">
+    <h1>Pick an Egg to Begin</h1>
+    <div class="eggs">
+        <!-- Replaced 🔴 and ⚫ with 🥚 -->
+        <div class="egg" onclick="hatchEgg('pet1.jpg')">🥚</div>
+        <div class="egg" onclick="hatchEgg('pet2.jpg')">🥚</div>
     </div>
+</div>
+
+<!-- The container that shows up AFTER the egg opens -->
+<div id="hatch-screen" style="display: none;">
+    <h2>Look what hatched! 🎉</h2>
+    <!-- This tag will hold your picture instead of the 💥 emoji -->
+    <img id="hatched-image" src="" alt="Hatched Pet" style="max-width: 300px; border-radius: 10px;">
+</div>
 
     <!-- STAGE 2: THE PREMIUM SHOP -->
     <div id="shop-screen">
