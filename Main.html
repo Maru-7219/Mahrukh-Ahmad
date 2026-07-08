@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An Exclusive Collection</title>
+    <style>
+        :root {
+            --bg-color: #0d0d0d;
+            --card-bg: #1a1a1a;
+            --accent-red: #d32f2f;
+            --neon-glow: #ff4d4d;
+            --text-light: #ffffff;
+            --text-gray: #a0a0a0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        /* SCREEN 1: THE EGG CHOICE */
+        #egg-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 20px;
+        }
+
+        .egg-title {
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-light);
+            text-shadow: 0 0 10px var(--neon-glow);
+        }
+
+        .egg-container {
+            display: flex;
+            gap: 50px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .egg {
+            font-size: 100px;
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            user-select: none;
+            filter: drop-shadow(0 0 10px rgba(211, 47, 47, 0.5));
+        }
+
+        .egg:hover {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 0 20px var(--neon-glow));
+        }
+
+        /* SCREEN 2: THE SHOP (Hidden initially) */
+        #shop-screen {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 20px;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .shop-header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 20px;
+        }
+
+        .shop-header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-red);
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .shop-header p {
+            color: var(--text-gray);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, border-color 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-red);
+            box-shadow: 0 10px 20px rgba(211, 47, 47, 0.1);
+        }
+
+        .product-img-wrapper {
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            background-color: #111;
+            position: relative;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .product-price {
+            font-size: 1.4rem;
+            color: var(--accent-red);
+            font-weight: bold;
+        }
+
+        .add-to-cart-btn {
+            margin-top: auto;
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #b71c1c;
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* POPUP MODAL FOR PUNCHLINE */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-red);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 0 30px var(--neon-glow);
+        }
+
+        .modal-content h2 {
+            color: var(--accent-red);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            margin-top: 25px;
+            background-color: transparent;
+            border: 1px solid var(--text-gray);
+            color: var(--text-gray);
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            color: white;
+            border-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- STAGE 1: CHOOSE AN EGG -->
+    <div id="egg-screen">
+        <h1 class="egg-title">Pick an Egg to Begin</h1>
+        <div class="egg-container">
+            <!-- Both eggs call the same hatch function -->
+            <div class="egg" onclick="hatchEgg(this)">🔴</div>
+            <div class="egg" onclick="hatchEgg(this)">⚫</div>
+        </div>
+    </div>
+
+    <!-- STAGE 2: THE PREMIUM SHOP -->
+    <div id="shop-screen">
+        <header class="shop-header">
+            <h1>The Premium Collection</h1>
+            <p>High demand items. Limited availability.</p>
+        </header>
+
+        <main class="products-grid">
+            <!-- PRODUCT 1 -->
+            <div class="product-card">
+                <div class="product-img-wrapper">
+                    <!-- Replace with his photo path -->
+                    <img src="your_boyfriend_1.jpg" alt="Boyfriend Tier 1" class="product-img">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">The "Absolute Cutest" Edition</div>
+                    <div class="product-price">$999,999.99</div>
+                    <button class="add-to-cart-btn" onclick="triggerSoldOut()">add to cart 💗</button>
+                </div>
+            </div>
+
+            <!-- PRODUCT 2 -->
+            <div class="product-card">
+                <div class="product-img-wrapper">
+                    <!-- Replace with his photo path -->
+                    <img src="your_boyfriend_2.jpg" alt="Boyfriend Tier 2" class="product-img">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">The "Extremely Fine" Premium</div>
+                    <div class="product-price">$5,000,000.00</div>
+                    <button class="add-to-cart-btn" onclick="triggerSoldOut()">add to cart 💗</button>
+                </div>
+            </div>
+
+            <!-- PRODUCT 3 -->
+            <div class="product-card">
+                <div class="product-img-wrapper">
+                    <!-- Replace with his photo path -->
+                    <img src="your_boyfriend_3.jpg" alt="Boyfriend Tier 3" class="product-img">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">The "Flawless Masterpiece" Deluxe</div>
+                    <div class="product-price">Priceless</div>
+                    <button class="add-to-cart-btn" onclick="triggerSoldOut()">add to cart 💗</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- POPUP MODAL FOR THE REJECTED CART -->
+    <div id="sold-out-modal" class="modal">
+        <div class="modal-content">
+            <h2>Sold Out!</h2>
+            <p>Somebody's husband now 💗</p>
+            <button class="close-btn" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Function handles the egg clicking
+        function hatchEgg(eggElement) {
+            // Give it a quick shaking/hatching animation visual in emoji text
+            eggElement.innerText = "💥";
+            
+            // Wait 600 milliseconds, then transition to the shop
+            setTimeout(() => {
+                document.getElementById('egg-screen').style.display = 'none';
+                
+                // Change body to allow scrolling if the shop has many items
+                document.body.style.display = 'block'; 
+                document.getElementById('shop-screen').style.display = 'block';
+            }, 600);
+        }
+
+        // Functions to control the alert pop-up
+        function triggerSoldOut() {
+            document.getElementById('sold-out-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('sold-out-modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
